@@ -12,7 +12,7 @@ import org.json.simple.parser.ParseException;
 
 public class SimpleJsonReader {
 
-	SimpleJsonReader() {
+	public SimpleJsonReader() {
 		
 	}
 	

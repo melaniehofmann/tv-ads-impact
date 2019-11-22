@@ -25,7 +25,7 @@ public class User implements Id, Time {
 
 	}
 
-	public User(int userId, LocalDateTime time) {
+	public User(final int userId, final LocalDateTime time) {
 		this.userId = userId;
 		this.time = time;
 	}
@@ -36,7 +36,7 @@ public class User implements Id, Time {
 	}
 
 	@Override
-	public void setTime(LocalDateTime time) {
+	public void setTime(final LocalDateTime time) {
 		this.time = time;
 	}
 
@@ -47,7 +47,7 @@ public class User implements Id, Time {
 
 	@JsonSetter("userId")
 	@Override
-	public void setId(int id) {
+	public void setId(final int id) {
 		this.userId = id;
 	}
 

@@ -10,11 +10,11 @@ import com.hofmann.melanie.analytics.Range;
 
 public class DateTimeUtils {
 
-	public static long dateTimeToMs(LocalDateTime dateTime) {
+	public static long dateTimeToMs(final LocalDateTime dateTime) {
 		return dateTime.toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli();
 	}
 
-	public static boolean inTimeRange(Range range, LocalDateTime dateTime) {
+	public static boolean inTimeRange(final Range range, final LocalDateTime dateTime) {
 		return range.isInRange(dateTimeToMs(dateTime));
 	}
 }

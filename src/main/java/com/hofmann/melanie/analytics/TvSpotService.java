@@ -23,17 +23,14 @@ public class TvSpotService {
 	// time period for analysis in milliseconds -> 10 min
 	private static final int TIME_PERIOD = 600000;
 
-	@Inject
-	private SimpleJsonReader jsonReader;
-
-	@Inject
-	private JsonMapper jsonMapper;
-
-	public void analyseTvSpots(boolean useLargeSet) {
+	public void analyseTvSpots(final boolean useLargeSet) {
 		String setToUse = useLargeSet ? SPOT_INFORMATION_LARGE_FILE : SPOT_INFORMATION_FILE;
 
 		System.out.println("Starting TV Spot Analysis for set: " + setToUse);
 
+		final SimpleJsonReader jsonReader = new SimpleJsonReader();
+		final JsonMapper jsonMapper = new JsonMapper();
+		
 		JSONObject json = jsonReader.readFileAsJsonObject(setToUse);
 
 		ArrayList<TvSpot> tvSpots = jsonMapper.mapObject((JSONArray) json.get("tvSpots"),
@@ -65,19 +62,19 @@ public class TvSpotService {
 		}
 	}
 
-	private ArrayList<User> countUsersInTimeRange(Range range, ArrayList<User> users) {
+	private ArrayList<User> countUsersInTimeRange(final Range range, final ArrayList<User> users) {
 		return users.stream().filter(u -> DateTimeUtils.inTimeRange(range, u.getTime()))
 				.collect(Collectors.toCollection(ArrayList::new));
 	}
 
-	private Range getTimeRangeBeforeSpot(TvSpot tvSpot) {
+	private Range getTimeRangeBeforeSpot(final TvSpot tvSpot) {
 		long timeTo = DateTimeUtils.dateTimeToMs(tvSpot.getTime());
 		long timeFrom = timeTo - TIME_PERIOD;
 
 		return new Range(timeFrom, timeTo);
 	}
 
-	private Range getTimeRangeAfterSpot(TvSpot tvSpot) {
+	private Range getTimeRangeAfterSpot(final TvSpot tvSpot) {
 		long timeFrom = DateTimeUtils.dateTimeToMs(tvSpot.getTime());
 		long timeTo = DateTimeUtils.dateTimeToMs(tvSpot.getTime()) + TIME_PERIOD;
 

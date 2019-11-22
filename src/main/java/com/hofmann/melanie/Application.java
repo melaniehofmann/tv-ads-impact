@@ -3,8 +3,6 @@
  */
 package com.hofmann.melanie;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import com.hofmann.melanie.analytics.TvSpotService;
 
 public class Application {
@@ -13,8 +11,7 @@ public class Application {
 		System.out.println("Starting Coding Challange: Impact of TV ads. By DI Melanie Hofmann");
 		long startMilliseconds = System.currentTimeMillis();
 
-		Injector injector = Guice.createInjector(new BasicModule());
-		TvSpotService tvSpotService = injector.getInstance(TvSpotService.class);
+		TvSpotService tvSpotService = new TvSpotService();
 
 		boolean largeSet = args.length > 0 && args[0].equals("true");
 

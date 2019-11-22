@@ -13,11 +13,11 @@ import com.fasterxml.jackson.databind.type.CollectionType;
 
 public class JsonMapper {
 
-	JsonMapper() {
+	public JsonMapper() {
 
 	}
 
-	public <T> ArrayList<T> mapObject(JSONArray jsonArray, Class<T> classToBind) {
+	public <T> ArrayList<T> mapObject(final JSONArray jsonArray, final Class<T> classToBind) {
 		ObjectMapper objectMapper = new ObjectMapper();
 		CollectionType type = objectMapper.getTypeFactory().constructCollectionType(List.class,
 				classToBind);

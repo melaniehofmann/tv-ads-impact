@@ -38,7 +38,7 @@ public class TvSpot implements Id, Time {
 	}
 
 	@Override
-	public void setTime(LocalDateTime time) {
+	public void setTime(final LocalDateTime time) {
 		this.time = time;
 	}
 
