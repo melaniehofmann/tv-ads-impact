@@ -4,12 +4,12 @@
 package com.hofmann.melanie.analytics;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.stream.Collectors;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import com.google.inject.Inject;
 import com.hofmann.melanie.file.JsonMapper;
 import com.hofmann.melanie.file.SimpleJsonReader;
 import com.hofmann.melanie.spot.TvSpot;
@@ -37,31 +37,29 @@ public class TvSpotService {
 				TvSpot.class);
 		ArrayList<User> users = jsonMapper.mapObject((JSONArray) json.get("newUsers"), User.class);
 
-		TvSpot bestSpot = null;
-
-		for (TvSpot tvSpot : tvSpots) {
-			ArrayList<User> usersBeforeSpot = countUsersInTimeRange(getTimeRangeBeforeSpot(tvSpot),
-					users);
-			ArrayList<User> usersAfterSpot = countUsersInTimeRange(getTimeRangeAfterSpot(tvSpot),
-					users);
-
-			int newUsers = usersAfterSpot.size() - usersBeforeSpot.size();
-
-			tvSpot.setNewUsers(newUsers);
-
-			if (bestSpot == null || bestSpot.getNewUsers() < tvSpot.getNewUsers()) {
-				bestSpot = tvSpot;
-			}
-
-			System.out.println(String.format("Spot %S: %d new users", tvSpot.getId(), newUsers));
-		}
-
-		if (bestSpot != null) {
-			System.out.println(String.format("Spot that worked best with %d new users, is Spot %s",
-					bestSpot.getNewUsers(), bestSpot.getId()));
-		}
+		tvSpots.forEach(t -> calculateTvSpotUsers(users, t));
+		
+		// Get best spot
+		tvSpots.stream()
+		.max(Comparator.comparing(TvSpot::getNewUsers))
+		.ifPresent((t) -> System.out.println(String.format("Spot that worked best with %d new users, is Spot %s",
+				t.getNewUsers(), t.getId())));
 	}
 
+	
+	private void calculateTvSpotUsers(ArrayList<User> users, TvSpot tvSpot) {
+		ArrayList<User> usersBeforeSpot = countUsersInTimeRange(getTimeRangeBeforeSpot(tvSpot),
+				users);
+		ArrayList<User> usersAfterSpot = countUsersInTimeRange(getTimeRangeAfterSpot(tvSpot),
+				users);
+
+		int newUsers = usersAfterSpot.size() - usersBeforeSpot.size();
+
+		tvSpot.setNewUsers(newUsers);
+
+		System.out.println(String.format("Spot %S: %d new users", tvSpot.getId(), newUsers));
+	}
+	
 	private ArrayList<User> countUsersInTimeRange(final Range range, final ArrayList<User> users) {
 		return users.stream().filter(u -> DateTimeUtils.inTimeRange(range, u.getTime()))
 				.collect(Collectors.toCollection(ArrayList::new));
