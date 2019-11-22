@@ -3,13 +3,9 @@
  */
 package com.hofmann.melanie.analytics;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -21,8 +17,6 @@ import com.hofmann.melanie.spot.User;
 import com.hofmann.melanie.utils.DateTimeUtils;
 
 public class TvSpotService {
-	private static final Logger LOG = LogManager.getLogger(TvSpotService.class);
-
 	private static final String SPOT_INFORMATION_FILE = "new_users.json";
 	private static final String SPOT_INFORMATION_LARGE_FILE = "new_users_large_set.json";
 
@@ -37,9 +31,9 @@ public class TvSpotService {
 
 	public void analyseTvSpots(boolean useLargeSet) {
 		String setToUse = useLargeSet ? SPOT_INFORMATION_LARGE_FILE : SPOT_INFORMATION_FILE;
-		
-		LOG.info("Starting TV Spot Analysis for set: " + setToUse);
-		
+
+		System.out.println("Starting TV Spot Analysis for set: " + setToUse);
+
 		JSONObject json = jsonReader.readFileAsJsonObject(setToUse);
 
 		ArrayList<TvSpot> tvSpots = jsonMapper.mapObject((JSONArray) json.get("tvSpots"),
@@ -57,16 +51,16 @@ public class TvSpotService {
 			int newUsers = usersAfterSpot.size() - usersBeforeSpot.size();
 
 			tvSpot.setNewUsers(newUsers);
-			
+
 			if (bestSpot == null || bestSpot.getNewUsers() < tvSpot.getNewUsers()) {
 				bestSpot = tvSpot;
 			}
 
-			LOG.info(String.format("Spot %S: %d new users", tvSpot.getId(), newUsers));
+			System.out.println(String.format("Spot %S: %d new users", tvSpot.getId(), newUsers));
 		}
 
 		if (bestSpot != null) {
-			LOG.info(String.format("Spot that worked best with %d new users, is Spot %s",
+			System.out.println(String.format("Spot that worked best with %d new users, is Spot %s",
 					bestSpot.getNewUsers(), bestSpot.getId()));
 		}
 	}
