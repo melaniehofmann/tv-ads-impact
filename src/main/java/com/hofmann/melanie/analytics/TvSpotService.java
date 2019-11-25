@@ -37,7 +37,7 @@ public class TvSpotService {
 				TvSpot.class);
 		ArrayList<User> users = jsonMapper.mapObject((JSONArray) json.get("newUsers"), User.class);
 
-		tvSpots.forEach(t -> calculateTvSpotUsers(users, t));
+		tvSpots.parallelStream().forEach(t -> calculateTvSpotUsers(users, t));
 		
 		// Get best spot
 		tvSpots.stream()
@@ -47,7 +47,7 @@ public class TvSpotService {
 	}
 
 	
-	private void calculateTvSpotUsers(ArrayList<User> users, TvSpot tvSpot) {
+	private void calculateTvSpotUsers(final ArrayList<User> users, final TvSpot tvSpot) {
 		ArrayList<User> usersBeforeSpot = countUsersInTimeRange(getTimeRangeBeforeSpot(tvSpot),
 				users);
 		ArrayList<User> usersAfterSpot = countUsersInTimeRange(getTimeRangeAfterSpot(tvSpot),
@@ -61,7 +61,7 @@ public class TvSpotService {
 	}
 	
 	private ArrayList<User> countUsersInTimeRange(final Range range, final ArrayList<User> users) {
-		return users.stream().filter(u -> DateTimeUtils.inTimeRange(range, u.getTime()))
+		return users.parallelStream().filter(u -> DateTimeUtils.inTimeRange(range, u.getTime()))
 				.collect(Collectors.toCollection(ArrayList::new));
 	}
 
